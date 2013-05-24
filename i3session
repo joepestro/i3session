@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python2
 
 import os
 import i3
@@ -7,6 +7,7 @@ import pickle
 import subprocess
 import logging
 from time import sleep
+from xdg.BaseDirectory import *
 
 class Node:
     def __init__(self, data, parent = None):
@@ -137,6 +138,15 @@ def show_help():
 if __name__ == '__main__':
     # logging.basicConfig(level=logging.DEBUG)
 
+    # If ~/.i3 doesn't exist use XDG_CONFIG_DIR
+    home = os.getenv("HOME")
+    config_dir = os.path.join(home, '.i3')
+
+    if not os.path.isdir(config_dir):
+        config_dir = os.path.join(xdg_config_home, 'i3')
+
+    config_file = os.path.join(config_dir, 'session')
+
     if len(sys.argv) < 2:
         show_help()
         sys.exit(1)
@@ -149,15 +159,15 @@ if __name__ == '__main__':
         if session['nodes']:
             session['nodes'] = Tree.assign_processes(session['nodes']) 
 
-        pickle.dump(session, open("%s/.i3/session" % os.path.expanduser("~"), "wb"))
-        print "Session saved to ~/.i3/session"
+        pickle.dump(session, open(config_file, "wb"))
+        print "Session saved to " + config_file
     elif sys.argv[1] == 'restore':
         nag_bar = nag_bar_process()
         print "Restoring..."
 
         # load session from file
         try:
-            session = pickle.load(open("%s/.i3/session" % os.path.expanduser("~"), "rb"))
+            session = pickle.load(open(config_file, "rb"))
         except Exception:
             print "Can't restore saved session..."
             sys.exit(1)
@@ -170,7 +180,7 @@ if __name__ == '__main__':
                 Tree.restore(session['nodes']) 
 
         nag_bar.terminate()
-        print "Session restored from ~/.i3/session"
+        print "Session restored from " + config_file
     else:
         show_help()
         sys.exit(1)
