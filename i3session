@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python2
 
 import os
 import i3
@@ -51,7 +51,8 @@ class Node:
         # Use orientation of parent container
         if self.parent and self.parent.data['orientation']:
             logging.debug("orientation is now %s", self.parent.data['orientation'])
-            i3.command('split', self.parent.data['orientation'])
+            if self.parent and self.parent.data['orientation']!='none':
+                i3.command('split', self.parent.data['orientation'])
 
         # This is a workspace
         if isinstance(self, Workspace):
