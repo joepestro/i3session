@@ -50,10 +50,9 @@ class Node:
 
     def restore(self):
         # Use orientation of parent container
-        if self.parent and self.parent.data['orientation']:
+        if self.parent and self.parent.data['orientation']!='none':
             logging.debug("orientation is now %s", self.parent.data['orientation'])
-            if self.parent and self.parent.data['orientation']!='none':
-                i3.command('split', self.parent.data['orientation'])
+            i3.command('split', self.parent.data['orientation'])
 
         # This is a workspace
         if isinstance(self, Workspace):
