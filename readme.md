@@ -38,3 +38,4 @@ Dependencies
 * i3-py (https://github.com/ziberna/i3-py)
 * i3-nagbar
 * xprop
+* PyXDG
